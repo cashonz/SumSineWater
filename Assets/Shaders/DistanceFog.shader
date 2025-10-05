@@ -25,29 +25,11 @@ Shader "BlitWithMaterial"
            float _FogStrength;
            float4 _FogColor;
 
-            float4 Mix(float4 x, float4 y, float a)
-            {
-                return x * (1-a) + y * a;
-            }
-
             float CalcFogFactor(float z)
             {
                 return exp(-_FogStrength * z);
             }
-
-            float3 ReconstructWorldPosition(float2 uv, float rawDepth, float4x4 invViewProj)
-            {
-                // Transform depth from [0,1] to clip space [-1,1]
-                float4 clipPos = float4(uv * 2 - 1, rawDepth * 2 - 1, 1.0);
-                
-                // Transform to world space
-                float4 worldPos = mul(invViewProj, clipPos);
-                worldPos /= worldPos.w;
-                
-                return worldPos.xyz;
-            }
-
-            // Out frag function takes as input a struct that contains the screen space coordinate we are going to use to sample our texture. It also writes to SV_Target0, this has to match the index set in the UseTextureFragment(sourceTexture, 0, …) we defined in our render pass script.   
+   
             float4 Frag(Varyings IN) : SV_Target
             {
 
